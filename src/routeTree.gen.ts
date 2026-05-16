@@ -15,6 +15,10 @@ import { Route as AccessDeniedRouteImport } from './routes/access-denied'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppTransactionsRouteImport } from './routes/_app/transactions'
+import { Route as AppSuppliersRouteImport } from './routes/_app/suppliers'
+import { Route as AppStaffRouteImport } from './routes/_app/staff'
+import { Route as AppSettingsRouteImport } from './routes/_app/settings'
+import { Route as AppReportsRouteImport } from './routes/_app/reports'
 import { Route as AppPrescriptionsRouteImport } from './routes/_app/prescriptions'
 import { Route as AppPosRouteImport } from './routes/_app/pos'
 import { Route as AppMedicinesRouteImport } from './routes/_app/medicines'
@@ -23,6 +27,7 @@ import { Route as AppExpiryRouteImport } from './routes/_app/expiry'
 import { Route as AppExpensesRouteImport } from './routes/_app/expenses'
 import { Route as AppDashboardRouteImport } from './routes/_app/dashboard'
 import { Route as AppCustomersRouteImport } from './routes/_app/customers'
+import { Route as AppAttendanceRouteImport } from './routes/_app/attendance'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -51,6 +56,26 @@ const IndexRoute = IndexRouteImport.update({
 const AppTransactionsRoute = AppTransactionsRouteImport.update({
   id: '/transactions',
   path: '/transactions',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSuppliersRoute = AppSuppliersRouteImport.update({
+  id: '/suppliers',
+  path: '/suppliers',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppStaffRoute = AppStaffRouteImport.update({
+  id: '/staff',
+  path: '/staff',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSettingsRoute = AppSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppReportsRoute = AppReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
   getParentRoute: () => AppRoute,
 } as any)
 const AppPrescriptionsRoute = AppPrescriptionsRouteImport.update({
@@ -93,12 +118,18 @@ const AppCustomersRoute = AppCustomersRouteImport.update({
   path: '/customers',
   getParentRoute: () => AppRoute,
 } as any)
+const AppAttendanceRoute = AppAttendanceRouteImport.update({
+  id: '/attendance',
+  path: '/attendance',
+  getParentRoute: () => AppRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/access-denied': typeof AccessDeniedRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/attendance': typeof AppAttendanceRoute
   '/customers': typeof AppCustomersRoute
   '/dashboard': typeof AppDashboardRoute
   '/expenses': typeof AppExpensesRoute
@@ -107,6 +138,10 @@ export interface FileRoutesByFullPath {
   '/medicines': typeof AppMedicinesRoute
   '/pos': typeof AppPosRoute
   '/prescriptions': typeof AppPrescriptionsRoute
+  '/reports': typeof AppReportsRoute
+  '/settings': typeof AppSettingsRoute
+  '/staff': typeof AppStaffRoute
+  '/suppliers': typeof AppSuppliersRoute
   '/transactions': typeof AppTransactionsRoute
 }
 export interface FileRoutesByTo {
@@ -114,6 +149,7 @@ export interface FileRoutesByTo {
   '/access-denied': typeof AccessDeniedRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/attendance': typeof AppAttendanceRoute
   '/customers': typeof AppCustomersRoute
   '/dashboard': typeof AppDashboardRoute
   '/expenses': typeof AppExpensesRoute
@@ -122,6 +158,10 @@ export interface FileRoutesByTo {
   '/medicines': typeof AppMedicinesRoute
   '/pos': typeof AppPosRoute
   '/prescriptions': typeof AppPrescriptionsRoute
+  '/reports': typeof AppReportsRoute
+  '/settings': typeof AppSettingsRoute
+  '/staff': typeof AppStaffRoute
+  '/suppliers': typeof AppSuppliersRoute
   '/transactions': typeof AppTransactionsRoute
 }
 export interface FileRoutesById {
@@ -131,6 +171,7 @@ export interface FileRoutesById {
   '/access-denied': typeof AccessDeniedRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/_app/attendance': typeof AppAttendanceRoute
   '/_app/customers': typeof AppCustomersRoute
   '/_app/dashboard': typeof AppDashboardRoute
   '/_app/expenses': typeof AppExpensesRoute
@@ -139,6 +180,10 @@ export interface FileRoutesById {
   '/_app/medicines': typeof AppMedicinesRoute
   '/_app/pos': typeof AppPosRoute
   '/_app/prescriptions': typeof AppPrescriptionsRoute
+  '/_app/reports': typeof AppReportsRoute
+  '/_app/settings': typeof AppSettingsRoute
+  '/_app/staff': typeof AppStaffRoute
+  '/_app/suppliers': typeof AppSuppliersRoute
   '/_app/transactions': typeof AppTransactionsRoute
 }
 export interface FileRouteTypes {
@@ -148,6 +193,7 @@ export interface FileRouteTypes {
     | '/access-denied'
     | '/forgot-password'
     | '/login'
+    | '/attendance'
     | '/customers'
     | '/dashboard'
     | '/expenses'
@@ -156,6 +202,10 @@ export interface FileRouteTypes {
     | '/medicines'
     | '/pos'
     | '/prescriptions'
+    | '/reports'
+    | '/settings'
+    | '/staff'
+    | '/suppliers'
     | '/transactions'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -163,6 +213,7 @@ export interface FileRouteTypes {
     | '/access-denied'
     | '/forgot-password'
     | '/login'
+    | '/attendance'
     | '/customers'
     | '/dashboard'
     | '/expenses'
@@ -171,6 +222,10 @@ export interface FileRouteTypes {
     | '/medicines'
     | '/pos'
     | '/prescriptions'
+    | '/reports'
+    | '/settings'
+    | '/staff'
+    | '/suppliers'
     | '/transactions'
   id:
     | '__root__'
@@ -179,6 +234,7 @@ export interface FileRouteTypes {
     | '/access-denied'
     | '/forgot-password'
     | '/login'
+    | '/_app/attendance'
     | '/_app/customers'
     | '/_app/dashboard'
     | '/_app/expenses'
@@ -187,6 +243,10 @@ export interface FileRouteTypes {
     | '/_app/medicines'
     | '/_app/pos'
     | '/_app/prescriptions'
+    | '/_app/reports'
+    | '/_app/settings'
+    | '/_app/staff'
+    | '/_app/suppliers'
     | '/_app/transactions'
   fileRoutesById: FileRoutesById
 }
@@ -240,6 +300,34 @@ declare module '@tanstack/react-router' {
       path: '/transactions'
       fullPath: '/transactions'
       preLoaderRoute: typeof AppTransactionsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/suppliers': {
+      id: '/_app/suppliers'
+      path: '/suppliers'
+      fullPath: '/suppliers'
+      preLoaderRoute: typeof AppSuppliersRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/staff': {
+      id: '/_app/staff'
+      path: '/staff'
+      fullPath: '/staff'
+      preLoaderRoute: typeof AppStaffRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/settings': {
+      id: '/_app/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AppSettingsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/reports': {
+      id: '/_app/reports'
+      path: '/reports'
+      fullPath: '/reports'
+      preLoaderRoute: typeof AppReportsRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/prescriptions': {
@@ -298,10 +386,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppCustomersRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/attendance': {
+      id: '/_app/attendance'
+      path: '/attendance'
+      fullPath: '/attendance'
+      preLoaderRoute: typeof AppAttendanceRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
 interface AppRouteChildren {
+  AppAttendanceRoute: typeof AppAttendanceRoute
   AppCustomersRoute: typeof AppCustomersRoute
   AppDashboardRoute: typeof AppDashboardRoute
   AppExpensesRoute: typeof AppExpensesRoute
@@ -310,10 +406,15 @@ interface AppRouteChildren {
   AppMedicinesRoute: typeof AppMedicinesRoute
   AppPosRoute: typeof AppPosRoute
   AppPrescriptionsRoute: typeof AppPrescriptionsRoute
+  AppReportsRoute: typeof AppReportsRoute
+  AppSettingsRoute: typeof AppSettingsRoute
+  AppStaffRoute: typeof AppStaffRoute
+  AppSuppliersRoute: typeof AppSuppliersRoute
   AppTransactionsRoute: typeof AppTransactionsRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppAttendanceRoute: AppAttendanceRoute,
   AppCustomersRoute: AppCustomersRoute,
   AppDashboardRoute: AppDashboardRoute,
   AppExpensesRoute: AppExpensesRoute,
@@ -322,6 +423,10 @@ const AppRouteChildren: AppRouteChildren = {
   AppMedicinesRoute: AppMedicinesRoute,
   AppPosRoute: AppPosRoute,
   AppPrescriptionsRoute: AppPrescriptionsRoute,
+  AppReportsRoute: AppReportsRoute,
+  AppSettingsRoute: AppSettingsRoute,
+  AppStaffRoute: AppStaffRoute,
+  AppSuppliersRoute: AppSuppliersRoute,
   AppTransactionsRoute: AppTransactionsRoute,
 }
 
