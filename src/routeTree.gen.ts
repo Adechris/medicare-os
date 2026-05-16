@@ -14,7 +14,15 @@ import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as AccessDeniedRouteImport } from './routes/access-denied'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppTransactionsRouteImport } from './routes/_app/transactions'
+import { Route as AppPrescriptionsRouteImport } from './routes/_app/prescriptions'
+import { Route as AppPosRouteImport } from './routes/_app/pos'
+import { Route as AppMedicinesRouteImport } from './routes/_app/medicines'
+import { Route as AppInventoryRouteImport } from './routes/_app/inventory'
+import { Route as AppExpiryRouteImport } from './routes/_app/expiry'
+import { Route as AppExpensesRouteImport } from './routes/_app/expenses'
 import { Route as AppDashboardRouteImport } from './routes/_app/dashboard'
+import { Route as AppCustomersRouteImport } from './routes/_app/customers'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -40,9 +48,49 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppTransactionsRoute = AppTransactionsRouteImport.update({
+  id: '/transactions',
+  path: '/transactions',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppPrescriptionsRoute = AppPrescriptionsRouteImport.update({
+  id: '/prescriptions',
+  path: '/prescriptions',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppPosRoute = AppPosRouteImport.update({
+  id: '/pos',
+  path: '/pos',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppMedicinesRoute = AppMedicinesRouteImport.update({
+  id: '/medicines',
+  path: '/medicines',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppInventoryRoute = AppInventoryRouteImport.update({
+  id: '/inventory',
+  path: '/inventory',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppExpiryRoute = AppExpiryRouteImport.update({
+  id: '/expiry',
+  path: '/expiry',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppExpensesRoute = AppExpensesRouteImport.update({
+  id: '/expenses',
+  path: '/expenses',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppDashboardRoute = AppDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppCustomersRoute = AppCustomersRouteImport.update({
+  id: '/customers',
+  path: '/customers',
   getParentRoute: () => AppRoute,
 } as any)
 
@@ -51,14 +99,30 @@ export interface FileRoutesByFullPath {
   '/access-denied': typeof AccessDeniedRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/customers': typeof AppCustomersRoute
   '/dashboard': typeof AppDashboardRoute
+  '/expenses': typeof AppExpensesRoute
+  '/expiry': typeof AppExpiryRoute
+  '/inventory': typeof AppInventoryRoute
+  '/medicines': typeof AppMedicinesRoute
+  '/pos': typeof AppPosRoute
+  '/prescriptions': typeof AppPrescriptionsRoute
+  '/transactions': typeof AppTransactionsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/access-denied': typeof AccessDeniedRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/customers': typeof AppCustomersRoute
   '/dashboard': typeof AppDashboardRoute
+  '/expenses': typeof AppExpensesRoute
+  '/expiry': typeof AppExpiryRoute
+  '/inventory': typeof AppInventoryRoute
+  '/medicines': typeof AppMedicinesRoute
+  '/pos': typeof AppPosRoute
+  '/prescriptions': typeof AppPrescriptionsRoute
+  '/transactions': typeof AppTransactionsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -67,7 +131,15 @@ export interface FileRoutesById {
   '/access-denied': typeof AccessDeniedRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/_app/customers': typeof AppCustomersRoute
   '/_app/dashboard': typeof AppDashboardRoute
+  '/_app/expenses': typeof AppExpensesRoute
+  '/_app/expiry': typeof AppExpiryRoute
+  '/_app/inventory': typeof AppInventoryRoute
+  '/_app/medicines': typeof AppMedicinesRoute
+  '/_app/pos': typeof AppPosRoute
+  '/_app/prescriptions': typeof AppPrescriptionsRoute
+  '/_app/transactions': typeof AppTransactionsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -76,9 +148,30 @@ export interface FileRouteTypes {
     | '/access-denied'
     | '/forgot-password'
     | '/login'
+    | '/customers'
     | '/dashboard'
+    | '/expenses'
+    | '/expiry'
+    | '/inventory'
+    | '/medicines'
+    | '/pos'
+    | '/prescriptions'
+    | '/transactions'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/access-denied' | '/forgot-password' | '/login' | '/dashboard'
+  to:
+    | '/'
+    | '/access-denied'
+    | '/forgot-password'
+    | '/login'
+    | '/customers'
+    | '/dashboard'
+    | '/expenses'
+    | '/expiry'
+    | '/inventory'
+    | '/medicines'
+    | '/pos'
+    | '/prescriptions'
+    | '/transactions'
   id:
     | '__root__'
     | '/'
@@ -86,7 +179,15 @@ export interface FileRouteTypes {
     | '/access-denied'
     | '/forgot-password'
     | '/login'
+    | '/_app/customers'
     | '/_app/dashboard'
+    | '/_app/expenses'
+    | '/_app/expiry'
+    | '/_app/inventory'
+    | '/_app/medicines'
+    | '/_app/pos'
+    | '/_app/prescriptions'
+    | '/_app/transactions'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -134,6 +235,55 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_app/transactions': {
+      id: '/_app/transactions'
+      path: '/transactions'
+      fullPath: '/transactions'
+      preLoaderRoute: typeof AppTransactionsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/prescriptions': {
+      id: '/_app/prescriptions'
+      path: '/prescriptions'
+      fullPath: '/prescriptions'
+      preLoaderRoute: typeof AppPrescriptionsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/pos': {
+      id: '/_app/pos'
+      path: '/pos'
+      fullPath: '/pos'
+      preLoaderRoute: typeof AppPosRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/medicines': {
+      id: '/_app/medicines'
+      path: '/medicines'
+      fullPath: '/medicines'
+      preLoaderRoute: typeof AppMedicinesRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/inventory': {
+      id: '/_app/inventory'
+      path: '/inventory'
+      fullPath: '/inventory'
+      preLoaderRoute: typeof AppInventoryRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/expiry': {
+      id: '/_app/expiry'
+      path: '/expiry'
+      fullPath: '/expiry'
+      preLoaderRoute: typeof AppExpiryRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/expenses': {
+      id: '/_app/expenses'
+      path: '/expenses'
+      fullPath: '/expenses'
+      preLoaderRoute: typeof AppExpensesRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/dashboard': {
       id: '/_app/dashboard'
       path: '/dashboard'
@@ -141,15 +291,38 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppDashboardRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/customers': {
+      id: '/_app/customers'
+      path: '/customers'
+      fullPath: '/customers'
+      preLoaderRoute: typeof AppCustomersRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
 interface AppRouteChildren {
+  AppCustomersRoute: typeof AppCustomersRoute
   AppDashboardRoute: typeof AppDashboardRoute
+  AppExpensesRoute: typeof AppExpensesRoute
+  AppExpiryRoute: typeof AppExpiryRoute
+  AppInventoryRoute: typeof AppInventoryRoute
+  AppMedicinesRoute: typeof AppMedicinesRoute
+  AppPosRoute: typeof AppPosRoute
+  AppPrescriptionsRoute: typeof AppPrescriptionsRoute
+  AppTransactionsRoute: typeof AppTransactionsRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppCustomersRoute: AppCustomersRoute,
   AppDashboardRoute: AppDashboardRoute,
+  AppExpensesRoute: AppExpensesRoute,
+  AppExpiryRoute: AppExpiryRoute,
+  AppInventoryRoute: AppInventoryRoute,
+  AppMedicinesRoute: AppMedicinesRoute,
+  AppPosRoute: AppPosRoute,
+  AppPrescriptionsRoute: AppPrescriptionsRoute,
+  AppTransactionsRoute: AppTransactionsRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
