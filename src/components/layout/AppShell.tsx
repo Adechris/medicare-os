@@ -5,6 +5,8 @@ import {
   ChevronLeft, ChevronRight, LogOut, Menu, X, Lock, Bell, Moon, Sun,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import { useAuth, canAccess, ROLE_META, type PageKey } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 
@@ -167,6 +169,20 @@ export function TopBar({ title, onOpenMenu }:{ title:string; onOpenMenu:()=>void
   const meta = user ? ROLE_META[user.role] : null;
   const [dark, setDark] = useState(false);
   useEffect(()=>{ document.documentElement.classList.toggle("dark", dark); }, [dark]);
+  const qc = useQueryClient();
+  const att = useQuery({ queryKey:["attendance"], queryFn: ()=>import("@/services/api").then(m=>m.api.listAttendanceToday()) , enabled: !!user });
+  const myRec = user ? (att.data||[]).find(a=>a.staffName===user.name) : null;
+  const clockedIn = !!(myRec?.clockIn && !myRec?.clockOut);
+  const clockMut = useMutation({
+    mutationFn: async () => {
+      const { api } = await import("@/services/api");
+      if (!user) return;
+      if (clockedIn) return api.clockOut(user.name);
+      return api.clockIn(user.id, user.name);
+    },
+    onSuccess: () => { toast.success(clockedIn ? "Clocked out" : "Clocked in"); qc.invalidateQueries({ queryKey:["attendance"] }); },
+    onError: (e:any) => toast.error(e?.message || "Failed"),
+  });
 
   return (
     <header className="sticky top-0 z-20 bg-background/80 backdrop-blur border-b border-border">
@@ -176,6 +192,21 @@ export function TopBar({ title, onOpenMenu }:{ title:string; onOpenMenu:()=>void
         </button>
         <h1 className="font-display text-base md:text-lg font-bold truncate">{title}</h1>
         <div className="ml-auto flex items-center gap-1.5">
+          {user && (
+            <button
+              onClick={()=>clockMut.mutate()}
+              disabled={clockMut.isPending}
+              className={cn(
+                "hidden sm:inline-flex items-center gap-1.5 h-8 px-3 rounded-md text-xs font-semibold border transition-colors",
+                clockedIn
+                  ? "bg-red-50 text-red-700 border-red-200 hover:bg-red-100 dark:bg-red-500/10 dark:text-red-300 dark:border-red-500/30"
+                  : "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-300 dark:border-emerald-500/30",
+              )}
+            >
+              <Clock className="h-3.5 w-3.5"/>
+              {clockedIn ? `Clock Out · ${myRec?.clockIn}` : "Clock In"}
+            </button>
+          )}
           <button className="relative h-9 w-9 inline-flex items-center justify-center rounded-md hover:bg-accent" aria-label="Notifications">
             <Bell className="h-4 w-4"/>
             <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-expiry-critical"/>
