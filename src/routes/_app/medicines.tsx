@@ -1,9 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { api } from "@/services/api";
 import { CATEGORIES } from "@/mock/data";
 import { Card, PageHeader, Button, Badge, SkeletonTable, EmptyState, StockBar } from "@/components/shared/Primitives";
+import { AddMedicineDialog } from "@/components/shared/Dialogs";
 import { formatNaira, formatDateShort, daysUntil } from "@/lib/format";
 import { Plus, Search, Download, Pill, FileText } from "lucide-react";
 import { toast } from "sonner";
@@ -15,6 +16,7 @@ function MedicinesPage() {
   const [q, setQ] = useState("");
   const [cat, setCat] = useState("");
   const [stockFilter, setStockFilter] = useState<""|"in"|"low"|"out">("");
+  const [addOpen, setAddOpen] = useState(false);
 
   const filtered = useMemo(()=>{
     return (meds.data||[]).filter(m=>{
@@ -32,7 +34,7 @@ function MedicinesPage() {
       <PageHeader title="Medicines" description={`${meds.data?.length ?? 0} SKUs in your catalog`}
         actions={<>
           <Button variant="outline" onClick={()=>toast.success("Export started")}><Download className="h-4 w-4"/> Export</Button>
-          <Button onClick={()=>toast.info("Add medicine form (mock)")}><Plus className="h-4 w-4"/> Add Medicine</Button>
+          <Button onClick={()=>setAddOpen(true)}><Plus className="h-4 w-4"/> Add Medicine</Button>
         </>}/>
 
       <Card className="p-4">
@@ -56,7 +58,7 @@ function MedicinesPage() {
 
         <div className="mt-4 overflow-x-auto">
           {meds.isLoading ? <SkeletonTable cols={8} rows={6}/> :
-           filtered.length===0 ? <EmptyState icon={Pill} title="No medicines match" description="Try adjusting filters or add a new medicine." action={<Button><Plus className="h-4 w-4"/> Add Medicine</Button>}/> :
+           filtered.length===0 ? <EmptyState icon={Pill} title="No medicines match" description="Try adjusting filters or add a new medicine." action={<Button onClick={()=>setAddOpen(true)}><Plus className="h-4 w-4"/> Add Medicine</Button>}/> :
            (<table className="w-full text-sm min-w-[1100px]">
             <thead>
               <tr className="text-left text-[11px] uppercase tracking-wider text-muted-foreground border-b border-border">
@@ -115,6 +117,10 @@ function MedicinesPage() {
           </table>)}
         </div>
       </Card>
+      <AddMedicineDialog open={addOpen} onClose={()=>setAddOpen(false)}/>
     </div>
   );
 }
+
+// satisfy unused import in some builds
+void useMutation; void useQueryClient;
