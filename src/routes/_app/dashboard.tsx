@@ -251,12 +251,19 @@ function AdminDashboard() {
 }
 
 function PharmacistDashboard() {
+  const navigate = useNavigate();
+  const [addMed, setAddMed] = useState(false);
   const meds = useQuery({ queryKey:["medicines"], queryFn: api.listMedicines });
   const presc = useQuery({ queryKey:["prescriptions"], queryFn: api.listPrescriptions });
   return (
     <div>
       <PageHeader title="Pharmacist dashboard" description="Medicines needing your attention today."
-        actions={<><Button variant="outline"><Pill className="h-4 w-4"/> Check Inventory</Button><Button><Plus className="h-4 w-4"/> New Sale</Button></>}/>
+        actions={<>
+          <Button variant="outline" onClick={()=>setAddMed(true)}><Plus className="h-4 w-4"/> Add Medicine</Button>
+          <Button variant="outline" onClick={()=>navigate({ to:"/inventory" })}><Pill className="h-4 w-4"/> Check Inventory</Button>
+          <Button onClick={()=>navigate({ to:"/pos" })}><Plus className="h-4 w-4"/> New Sale</Button>
+        </>}/>
+      <AddMedicineDialog open={addMed} onClose={()=>setAddMed(false)}/>
       <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
         <KPI icon={AlertTriangle} tone="warning" label="Low Stock" value={formatNumber(meds.data?.filter(m=>m.stock<=m.reorderLevel && m.stock>0).length ?? 0)} to="/inventory"/>
         <KPI icon={AlertOctagon} tone="danger" label="Expiring Soon" value={formatNumber(meds.data?.filter(m=>daysUntil(m.expiryDate)<=30).length ?? 0)} to="/expiry"/>
