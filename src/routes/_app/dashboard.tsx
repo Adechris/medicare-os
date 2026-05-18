@@ -55,6 +55,7 @@ function DashboardPage() {
 }
 
 function AdminDashboard() {
+  const navigate = useNavigate();
   const meds = useQuery({ queryKey:["medicines"], queryFn: api.listMedicines });
   const customers = useQuery({ queryKey:["customers"], queryFn: api.listCustomers });
   const txns = useQuery({ queryKey:["transactions"], queryFn: api.listTransactions });
@@ -82,8 +83,8 @@ function AdminDashboard() {
         title="Welcome back to MediCare"
         description="Here's what's happening across your pharmacy today."
         actions={<>
-          <Button variant="outline"><FileText className="h-4 w-4"/> Generate Report</Button>
-          <Button><Plus className="h-4 w-4"/> New Sale</Button>
+          <Button variant="outline" onClick={()=>navigate({ to:"/reports" })}><FileText className="h-4 w-4"/> Generate Report</Button>
+          <Button onClick={()=>navigate({ to:"/pos" })}><Plus className="h-4 w-4"/> New Sale</Button>
         </>}
       />
 
