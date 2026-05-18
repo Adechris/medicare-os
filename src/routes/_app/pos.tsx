@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { api } from "@/services/api";
 import type { Medicine } from "@/mock/data";
 import { Card, Button, Badge } from "@/components/shared/Primitives";
@@ -22,6 +22,22 @@ function POSPage() {
   const [tendered, setTendered] = useState("");
   const [discountPct, setDiscountPct] = useState(0);
   const [receiptOpen, setReceiptOpen] = useState<null|{ receiptNo:string; total:number; change:number }>(null);
+
+  // Pull pending prescription from sessionStorage (set by Prescriptions → Dispense from POS)
+  useEffect(()=>{
+    try {
+      const raw = sessionStorage.getItem("pos_dispense");
+      if (!raw || !meds.data) return;
+      const p = JSON.parse(raw);
+      const items: CartItem[] = [];
+      for (const line of p.medicines||[]) {
+        const m = meds.data.find(x=>x.name.toLowerCase()===String(line.name).toLowerCase());
+        if (m) items.push({ medicine:m, qty: line.qty||1 });
+      }
+      if (items.length) { setCart(items); toast.success(`Loaded prescription for ${p.patient}`); }
+      sessionStorage.removeItem("pos_dispense");
+    } catch {}
+  }, [meds.data]);
 
   const filtered = useMemo(()=>{
     const list = meds.data||[];

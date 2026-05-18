@@ -1,8 +1,9 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/services/api";
 import { useAuth } from "@/lib/auth";
 import { Card, PageHeader, Button, Badge } from "@/components/shared/Primitives";
+import { AddMedicineDialog, NewPurchaseOrderDialog } from "@/components/shared/Dialogs";
 import { formatNaira, formatNumber, formatDateShort, daysUntil } from "@/lib/format";
 import {
   DollarSign, TrendingUp, ShoppingCart, Pill, AlertTriangle, AlertOctagon,
@@ -54,6 +55,7 @@ function DashboardPage() {
 }
 
 function AdminDashboard() {
+  const navigate = useNavigate();
   const meds = useQuery({ queryKey:["medicines"], queryFn: api.listMedicines });
   const customers = useQuery({ queryKey:["customers"], queryFn: api.listCustomers });
   const txns = useQuery({ queryKey:["transactions"], queryFn: api.listTransactions });
@@ -81,8 +83,8 @@ function AdminDashboard() {
         title="Welcome back to MediCare"
         description="Here's what's happening across your pharmacy today."
         actions={<>
-          <Button variant="outline"><FileText className="h-4 w-4"/> Generate Report</Button>
-          <Button><Plus className="h-4 w-4"/> New Sale</Button>
+          <Button variant="outline" onClick={()=>navigate({ to:"/reports" })}><FileText className="h-4 w-4"/> Generate Report</Button>
+          <Button onClick={()=>navigate({ to:"/pos" })}><Plus className="h-4 w-4"/> New Sale</Button>
         </>}
       />
 
@@ -249,12 +251,19 @@ function AdminDashboard() {
 }
 
 function PharmacistDashboard() {
+  const navigate = useNavigate();
+  const [addMed, setAddMed] = useState(false);
   const meds = useQuery({ queryKey:["medicines"], queryFn: api.listMedicines });
   const presc = useQuery({ queryKey:["prescriptions"], queryFn: api.listPrescriptions });
   return (
     <div>
       <PageHeader title="Pharmacist dashboard" description="Medicines needing your attention today."
-        actions={<><Button variant="outline"><Pill className="h-4 w-4"/> Check Inventory</Button><Button><Plus className="h-4 w-4"/> New Sale</Button></>}/>
+        actions={<>
+          <Button variant="outline" onClick={()=>setAddMed(true)}><Plus className="h-4 w-4"/> Add Medicine</Button>
+          <Button variant="outline" onClick={()=>navigate({ to:"/inventory" })}><Pill className="h-4 w-4"/> Check Inventory</Button>
+          <Button onClick={()=>navigate({ to:"/pos" })}><Plus className="h-4 w-4"/> New Sale</Button>
+        </>}/>
+      <AddMedicineDialog open={addMed} onClose={()=>setAddMed(false)}/>
       <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
         <KPI icon={AlertTriangle} tone="warning" label="Low Stock" value={formatNumber(meds.data?.filter(m=>m.stock<=m.reorderLevel && m.stock>0).length ?? 0)} to="/inventory"/>
         <KPI icon={AlertOctagon} tone="danger" label="Expiring Soon" value={formatNumber(meds.data?.filter(m=>daysUntil(m.expiryDate)<=30).length ?? 0)} to="/expiry"/>
@@ -311,12 +320,19 @@ function CashierDashboard() {
 }
 
 function InventoryDashboard() {
+  const [addMed, setAddMed] = useState(false);
+  const [poOpen, setPoOpen] = useState(false);
   const meds = useQuery({ queryKey:["medicines"], queryFn: api.listMedicines });
   const sup = useQuery({ queryKey:["suppliers"], queryFn: api.listSuppliers });
   return (
     <div>
       <PageHeader title="Inventory dashboard" description="Stock health, expiries and supplier activity."
-        actions={<><Button variant="outline"><PackagePlus className="h-4 w-4"/> New Purchase Order</Button><Button><Plus className="h-4 w-4"/> Add Medicine</Button></>}/>
+        actions={<>
+          <Button variant="outline" onClick={()=>setPoOpen(true)}><PackagePlus className="h-4 w-4"/> New Purchase Order</Button>
+          <Button onClick={()=>setAddMed(true)}><Plus className="h-4 w-4"/> Add Medicine</Button>
+        </>}/>
+      <AddMedicineDialog open={addMed} onClose={()=>setAddMed(false)}/>
+      <NewPurchaseOrderDialog open={poOpen} onClose={()=>setPoOpen(false)}/>
       <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
         <KPI icon={Pill} tone="primary" label="Total Stock" value={formatNumber(meds.data?.reduce((s,m)=>s+m.stock,0) ?? 0)}/>
         <KPI icon={AlertTriangle} tone="warning" label="Low Stock" value={formatNumber(meds.data?.filter(m=>m.stock<=m.reorderLevel && m.stock>0).length ?? 0)}/>

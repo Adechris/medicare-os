@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { api } from "@/services/api";
 import { Card, PageHeader, Button, Badge, SkeletonTable } from "@/components/shared/Primitives";
+import { AddCustomerDialog } from "@/components/shared/Dialogs";
 import { formatNaira, formatDateShort } from "@/lib/format";
 import { Plus, Search, Users } from "lucide-react";
 
@@ -11,12 +12,13 @@ export const Route = createFileRoute("/_app/customers")({ component: CustomersPa
 function CustomersPage() {
   const customers = useQuery({ queryKey:["customers"], queryFn: api.listCustomers });
   const [q, setQ] = useState("");
+  const [addOpen, setAddOpen] = useState(false);
   const filtered = useMemo(()=> (customers.data||[]).filter(c=>!q || `${c.name} ${c.phone} ${c.email}`.toLowerCase().includes(q.toLowerCase())), [customers.data,q]);
 
   return (
     <div>
       <PageHeader title="Customers" description={`${customers.data?.length ?? 0} customers in your database`}
-        actions={<Button><Plus className="h-4 w-4"/> Add Customer</Button>}/>
+        actions={<Button onClick={()=>setAddOpen(true)}><Plus className="h-4 w-4"/> Add Customer</Button>}/>
 
       <Card className="p-4">
         <div className="relative max-w-md">
@@ -64,6 +66,7 @@ function CustomersPage() {
           )}
         </div>
       </Card>
+      <AddCustomerDialog open={addOpen} onClose={()=>setAddOpen(false)}/>
     </div>
   );
 }
