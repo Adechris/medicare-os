@@ -320,12 +320,19 @@ function CashierDashboard() {
 }
 
 function InventoryDashboard() {
+  const [addMed, setAddMed] = useState(false);
+  const [poOpen, setPoOpen] = useState(false);
   const meds = useQuery({ queryKey:["medicines"], queryFn: api.listMedicines });
   const sup = useQuery({ queryKey:["suppliers"], queryFn: api.listSuppliers });
   return (
     <div>
       <PageHeader title="Inventory dashboard" description="Stock health, expiries and supplier activity."
-        actions={<><Button variant="outline"><PackagePlus className="h-4 w-4"/> New Purchase Order</Button><Button><Plus className="h-4 w-4"/> Add Medicine</Button></>}/>
+        actions={<>
+          <Button variant="outline" onClick={()=>setPoOpen(true)}><PackagePlus className="h-4 w-4"/> New Purchase Order</Button>
+          <Button onClick={()=>setAddMed(true)}><Plus className="h-4 w-4"/> Add Medicine</Button>
+        </>}/>
+      <AddMedicineDialog open={addMed} onClose={()=>setAddMed(false)}/>
+      <NewPurchaseOrderDialog open={poOpen} onClose={()=>setPoOpen(false)}/>
       <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
         <KPI icon={Pill} tone="primary" label="Total Stock" value={formatNumber(meds.data?.reduce((s,m)=>s+m.stock,0) ?? 0)}/>
         <KPI icon={AlertTriangle} tone="warning" label="Low Stock" value={formatNumber(meds.data?.filter(m=>m.stock<=m.reorderLevel && m.stock>0).length ?? 0)}/>
