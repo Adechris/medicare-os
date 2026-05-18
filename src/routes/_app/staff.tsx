@@ -1,7 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import { api } from "@/services/api";
 import { Card, PageHeader, Button, Badge } from "@/components/shared/Primitives";
+import { AddStaffDialog } from "@/components/shared/Dialogs";
 import { formatNaira, formatDateShort } from "@/lib/format";
 import { Plus } from "lucide-react";
 
@@ -9,10 +11,11 @@ export const Route = createFileRoute("/_app/staff")({ component: StaffPage });
 
 function StaffPage() {
   const staff = useQuery({ queryKey:["staff"], queryFn: api.listStaff });
+  const [addOpen, setAddOpen] = useState(false);
   return (
     <div>
       <PageHeader title="Staff Management" description="Team members, roles and access"
-        actions={<Button><Plus className="h-4 w-4"/> Add Staff</Button>}/>
+        actions={<Button onClick={()=>setAddOpen(true)}><Plus className="h-4 w-4"/> Add Staff</Button>}/>
       <Card className="p-4">
         <div className="overflow-x-auto">
           <table className="w-full text-sm min-w-[860px]">
@@ -52,6 +55,7 @@ function StaffPage() {
           </table>
         </div>
       </Card>
+      <AddStaffDialog open={addOpen} onClose={()=>setAddOpen(false)}/>
     </div>
   );
 }

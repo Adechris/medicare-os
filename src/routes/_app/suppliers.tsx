@@ -1,18 +1,25 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import { api } from "@/services/api";
 import { Card, PageHeader, Button, Badge } from "@/components/shared/Primitives";
+import { AddSupplierDialog, NewPurchaseOrderDialog } from "@/components/shared/Dialogs";
 import { formatNaira, formatDateShort } from "@/lib/format";
-import { Plus, Truck } from "lucide-react";
+import { Plus, Truck, PackagePlus } from "lucide-react";
 
 export const Route = createFileRoute("/_app/suppliers")({ component: SuppliersPage });
 
 function SuppliersPage() {
   const sup = useQuery({ queryKey:["suppliers"], queryFn: api.listSuppliers });
+  const [addOpen, setAddOpen] = useState(false);
+  const [poFor, setPoFor] = useState<string | "any" | null>(null);
   return (
     <div>
       <PageHeader title="Suppliers" description="Manage your supply chain partners"
-        actions={<Button><Plus className="h-4 w-4"/> Add Supplier</Button>}/>
+        actions={<>
+          <Button variant="outline" onClick={()=>setPoFor("any")}><PackagePlus className="h-4 w-4"/> New Purchase Order</Button>
+          <Button onClick={()=>setAddOpen(true)}><Plus className="h-4 w-4"/> Add Supplier</Button>
+        </>}/>
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {(sup.data||[]).map(s=>(
           <Card key={s.id} className="p-4">
@@ -31,10 +38,12 @@ function SuppliersPage() {
               <div><div className="text-[11px] text-muted-foreground">Last order</div><div className="font-semibold">{formatDateShort(s.lastOrder)}</div></div>
               <div className="text-right"><div className="text-[11px] text-muted-foreground">Outstanding</div><div className={`font-semibold ${s.outstanding>0?"text-red-600":""}`}>{formatNaira(s.outstanding)}</div></div>
             </div>
-            <Button variant="outline" className="w-full mt-3">New Purchase Order</Button>
+            <Button variant="outline" className="w-full mt-3" onClick={()=>setPoFor(s.id)}>New Purchase Order</Button>
           </Card>
         ))}
       </div>
+      <AddSupplierDialog open={addOpen} onClose={()=>setAddOpen(false)}/>
+      <NewPurchaseOrderDialog open={poFor!==null} onClose={()=>setPoFor(null)} defaultSupplierId={poFor && poFor!=="any" ? poFor : undefined}/>
     </div>
   );
 }
