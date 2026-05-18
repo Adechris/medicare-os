@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { api } from "@/services/api";
 import { CATEGORIES } from "@/mock/data";
@@ -121,6 +121,3 @@ function MedicinesPage() {
     </div>
   );
 }
-
-// satisfy unused import in some builds
-void useMutation; void useQueryClient;
