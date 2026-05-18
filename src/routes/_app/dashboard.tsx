@@ -1,8 +1,9 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/services/api";
 import { useAuth } from "@/lib/auth";
 import { Card, PageHeader, Button, Badge } from "@/components/shared/Primitives";
+import { AddMedicineDialog, NewPurchaseOrderDialog } from "@/components/shared/Dialogs";
 import { formatNaira, formatNumber, formatDateShort, daysUntil } from "@/lib/format";
 import {
   DollarSign, TrendingUp, ShoppingCart, Pill, AlertTriangle, AlertOctagon,
