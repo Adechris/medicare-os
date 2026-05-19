@@ -10,40 +10,67 @@ import { Plus, Truck, PackagePlus } from "lucide-react";
 export const Route = createFileRoute("/_app/suppliers")({ component: SuppliersPage });
 
 function SuppliersPage() {
-  const sup = useQuery({ queryKey:["suppliers"], queryFn: api.listSuppliers });
+  const sup = useQuery({ queryKey: ["suppliers"], queryFn: api.listSuppliers });
   const [addOpen, setAddOpen] = useState(false);
   const [poFor, setPoFor] = useState<string | "any" | null>(null);
   return (
     <div>
-      <PageHeader title="Suppliers" description="Manage your supply chain partners"
-        actions={<>
-          <Button variant="outline" onClick={()=>setPoFor("any")}><PackagePlus className="h-4 w-4"/> New Purchase Order</Button>
-          <Button onClick={()=>setAddOpen(true)}><Plus className="h-4 w-4"/> Add Supplier</Button>
-        </>}/>
+      <PageHeader
+        title="Suppliers"
+        description="Manage your supply chain partners"
+        actions={
+          <>
+            <Button variant="outline" onClick={() => setPoFor("any")}>
+              <PackagePlus className="h-4 w-4" /> New Purchase Order
+            </Button>
+            <Button onClick={() => setAddOpen(true)}>
+              <Plus className="h-4 w-4" /> Add Supplier
+            </Button>
+          </>
+        }
+      />
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-        {(sup.data||[]).map(s=>(
+        {(sup.data || []).map((s) => (
           <Card key={s.id} className="p-4">
             <div className="flex items-start gap-3">
-              <div className="h-10 w-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center"><Truck className="h-5 w-5"/></div>
+              <div className="h-10 w-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+                <Truck className="h-5 w-5" />
+              </div>
               <div className="flex-1 min-w-0">
                 <h3 className="font-display font-bold truncate">{s.company}</h3>
                 <div className="text-xs text-muted-foreground">{s.name}</div>
               </div>
-              <Badge tone={s.status==="Active"?"success":"slate"}>{s.status}</Badge>
+              <Badge tone={s.status === "Active" ? "success" : "slate"}>{s.status}</Badge>
             </div>
             <div className="mt-3 text-xs text-muted-foreground space-y-0.5">
-              <div>{s.phone}</div><div>{s.email}</div><div>{s.address}</div>
+              <div>{s.phone}</div>
+              <div>{s.email}</div>
+              <div>{s.address}</div>
             </div>
             <div className="mt-3 pt-3 border-t border-border flex justify-between text-sm">
-              <div><div className="text-[11px] text-muted-foreground">Last order</div><div className="font-semibold">{formatDateShort(s.lastOrder)}</div></div>
-              <div className="text-right"><div className="text-[11px] text-muted-foreground">Outstanding</div><div className={`font-semibold ${s.outstanding>0?"text-red-600":""}`}>{formatNaira(s.outstanding)}</div></div>
+              <div>
+                <div className="text-[11px] text-muted-foreground">Last order</div>
+                <div className="font-semibold">{formatDateShort(s.lastOrder)}</div>
+              </div>
+              <div className="text-right">
+                <div className="text-[11px] text-muted-foreground">Outstanding</div>
+                <div className={`font-semibold ${s.outstanding > 0 ? "text-red-600" : ""}`}>
+                  {formatNaira(s.outstanding)}
+                </div>
+              </div>
             </div>
-            <Button variant="outline" className="w-full mt-3" onClick={()=>setPoFor(s.id)}>New Purchase Order</Button>
+            <Button variant="outline" className="w-full mt-3" onClick={() => setPoFor(s.id)}>
+              New Purchase Order
+            </Button>
           </Card>
         ))}
       </div>
-      <AddSupplierDialog open={addOpen} onClose={()=>setAddOpen(false)}/>
-      <NewPurchaseOrderDialog open={poFor!==null} onClose={()=>setPoFor(null)} defaultSupplierId={poFor && poFor!=="any" ? poFor : undefined}/>
+      <AddSupplierDialog open={addOpen} onClose={() => setAddOpen(false)} />
+      <NewPurchaseOrderDialog
+        open={poFor !== null}
+        onClose={() => setPoFor(null)}
+        defaultSupplierId={poFor && poFor !== "any" ? poFor : undefined}
+      />
     </div>
   );
 }
